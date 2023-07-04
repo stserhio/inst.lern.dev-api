@@ -1,5 +1,6 @@
 const { validationResult, checkSchema } = require('express-validator');
 const jwt = require("jsonwebtoken");
+const User = require('../models/user')
 
 /**
  * @swagger
@@ -278,3 +279,25 @@ exports.changepassword = async (req, res, next) => {
 
     return res.status(400).json({ errors: errors.array() });
 }
+
+// exports.profile = async (req, res) => {
+//
+//     try {
+//         const user = await User.findOne({email: req.body.email})
+//
+//         if (!user) {
+//             return res.status(404).json({
+//                 message: "Нет доступа к учетной записи или ее не существует"
+//             })
+//         }
+//         res.json({
+//             message: "Вы перешли в свой профиль"
+//         });
+//     } catch (err) {
+//         console.log(err)
+//         res.status(500).json({
+//             message: "Нет доступа"
+//         })
+//     }
+//
+// }

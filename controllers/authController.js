@@ -116,7 +116,7 @@ exports.login = async (req, res) => {
 // Выход из системы
 exports.logout = async (req, res) => {
 
-    const { id, tokenId, exp } = req.body.user;
+    const { id, tokenId, exp } = req.user;
 
     const ban = await BlackList.create({
         id: tokenId,
@@ -184,7 +184,7 @@ exports.changepassword = async (req, res) => {
 
     let { password } = req.body;
 
-    const { id, tokenId, exp } = req.body.user;
+    const { id, tokenId, exp } = req.user;
 
     const ban = await BlackList.create({
         id: tokenId,
@@ -198,3 +198,5 @@ exports.changepassword = async (req, res) => {
 
     return res.status(201).json({ "message": "Пароль изменён" });
 };
+
+// Вход в личный кабинет

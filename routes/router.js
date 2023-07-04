@@ -4,6 +4,7 @@ const userController = require('../controllers/userController')
 const validationRequest = require('../middlewares/validationRequest');
 const checkHasUser = require('../middlewares/checkHasUser')
 const auth = require("../middlewares/auth");
+const uploadImage = require("../middlewares/uploadImage");
 
 const router = express.Router()
 
@@ -216,6 +217,7 @@ router.get("/confirm", validationRequest.confirm, checkHasUser, authController.c
  *
  */
 router.post("/login", validationRequest.login, authController.login);
+//https://instagram.lern.dev/api/v1/login
 
 /**
  * @swagger
@@ -386,5 +388,9 @@ router.post("/forgot", validationRequest.forgot, authController.forgot);
 router.post("/changepassword", auth, validationRequest.changepassword, authController.changepassword);
 
 router.patch("/update", auth, userController.update);
+
+router.get("/profile/me", auth, userController.profileMe);
+
+router.post("/avatar", auth, uploadImage.single("avatar"), userController.avatar)
 
 module.exports = router

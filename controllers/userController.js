@@ -41,3 +41,23 @@ exports.update = async (req, res) => {
     return res.status(401).json({"message":"Логин или пароль указан не верно"});
 };
 
+exports.profileMe = async (req, res) => {
+    console.log(req.body.user)
+    const {id, firstName, lastName, email, avatar} = req.body.user
+    return res.status(200).json({
+        id,
+        firstName,
+        lastName,
+        email,
+        avatar,
+    })
+};
+
+exports.avatar = async (req, res) => {
+
+    console.log(req.file)
+
+    return res.status(200).json({
+        message: "Файл получен"
+    })
+}

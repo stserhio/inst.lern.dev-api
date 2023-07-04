@@ -1,6 +1,6 @@
 const express = require("express");
 const router = require("./routes/router");
-// const multer = require('multer');
+// const multer = require('multer')
 // Документация API
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
