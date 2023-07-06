@@ -39,7 +39,7 @@ const verifyToken = async (req, res, next) => {
 
     } catch (err) {
 
-        return res.status(401).json({"message":"Не верный токен"});
+        return res.status(401).json({"message":"Неверный токен"});
     }
 
     return next();

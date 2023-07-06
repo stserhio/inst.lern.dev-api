@@ -31,6 +31,24 @@ const s3Storage = multerS3({
     }
 })
 
+const sanitizeFile = (file, cb)=>{
+    const fileExts = ['.png', '.jpg', '.jpeg', '.gif']
+
+    //Check allowed extensions
+    const isAllowedExt = fileExts.includes(
+        path.extname(file.originalname.toLowerCase())
+    )
+
+    //Mime type must be an image
+    const isAllowedMimeType = file.mimetype.startsWith("image/")
+
+    if (isAllowedExt && isAllowedMimeType){
+        return cb(null, true) //no errors
+    }else{
+        cb("Error: File type is not allowed")
+    }
+}
+
 const uploadImage = multer({
     storage: s3Storage,
     fileFilter: (req, file, callback) => {

@@ -9,7 +9,7 @@ const { Model } = require('sequelize');
  *       properties:
  *         id:
  *           type: integer
- *           description: Id пользователя
+ *           description: id пользователя
  *         firstName:
  *           type: string
  *           maxLength: 30

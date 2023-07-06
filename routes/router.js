@@ -390,6 +390,7 @@ router.post("/changepassword", auth, validationRequest.changepassword, authContr
 router.patch("/update", auth, userController.update);
 
 router.get("/profile/me", auth, userController.profileMe);
+router.get("/profile/:id", auth, userController.profileUser);
 
 router.post("/avatar", auth, uploadImage.single("avatar"), userController.avatar)
 
