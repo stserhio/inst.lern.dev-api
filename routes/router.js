@@ -389,6 +389,54 @@ router.post("/changepassword", auth, validationRequest.changepassword, authContr
 
 router.patch("/update", auth, userController.update);
 
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: Работа с данными пользователя
+ * /user/update:
+ *   post:
+ *     summary: Обновление данных пользователя
+ *     tags: [User]
+ *     security:
+ *       - apiKeyAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/updateRequest'
+ *     responses:
+ *       200:
+ *         description: Ответ при удачной смене данных
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   description: Данные обновлены
+ *               example:
+ *                 message: "Данные обновлены"
+ *       401:
+ *         description: Токен недействительный
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/verifyTokenFailed"
+ *       403:
+ *         description: Токен обязателен
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/verifyTokenExist"
+ *       500:
+ *         description: Что-то пошло не так ...
+ */
+
+router.post('/user/update', auth, validationRequest.update, userController.update )
+
 router.get("/profile/me", auth, userController.profileMe);
 router.get("/profile/:id", auth, userController.profileUser);
 

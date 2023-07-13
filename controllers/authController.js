@@ -7,6 +7,7 @@ const sendMail = require("../services/mailer");
 const mailForgotTemplate = require("../templates/mailForgotTemplate");
 const User = require("../models").User;
 const BlackList = require("../models").BlackList;
+const Media = require("../models").Media;
 
 // Получение данных для регистрации, отправка письма для подтверждения
 exports.register = async (req, res) => {
@@ -91,13 +92,23 @@ exports.login = async (req, res) => {
 
         const tokenId = uuidv4();
 
+        const avatar = await Media.findOne({
+            where: {
+                model: 'User',
+                modelId: user.id,
+                fieldname: 'avatar'
+            }
+        })
+
+        const pathToAvatar = avatar ? `https://instagram.lern.dev/storage/${avatar.dataValues.path}` : ''
+
         const token = jwt.sign(
             {
                 id: user.id,
                 firstName: user.firstName,
                 lastName: user.lastName,
                 email: user.email,
-                avatar: user.avatar,
+                avatar: pathToAvatar,
                 tokenId
             },
             process.env.TOKEN_KEY,
@@ -106,6 +117,7 @@ exports.login = async (req, res) => {
             }
         );
         user.token = token;
+        user.avatar = pathToAvatar;
 
         return res.status(200).json(user);
     }
@@ -199,4 +211,14 @@ exports.changepassword = async (req, res) => {
     return res.status(201).json({ "message": "Пароль изменён" });
 };
 
-// Вход в личный кабинет
+// exports.update = async (req, res) => {
+//
+//     const {id} = req.body;
+//
+//     const user = await User.findOne({
+//         where: {id},
+//         attributes: ['firstName', 'lastName', 'password']
+//     });
+//
+//     const profile = await Profile.
+// }

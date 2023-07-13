@@ -108,6 +108,7 @@ module.exports = (sequelize, DataTypes) => {
         timestamps: true,
         associate: (models) => {
             User.hasMany(models.Blacklist, {foreignKey: 'userId'})
+            User.hasOne(models.Profile, {foreignKey: 'userId'})
         }
     });
     

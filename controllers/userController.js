@@ -1,16 +1,65 @@
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const {v4: uuidv4} = require('uuid');
-
-const mailConfirmTemplate = require("../templates/mailConfirmTemplate");
-const sendMail = require("../services/mailer");
+const bcrypt = require('bcryptjs')
 const User = require("../models").User;
-const BlackList = require("../models").BlackList;
 const Media = require("../models").Media;
 
 
 exports.update = async (req, res) => {
-    console.log(req.body);
+
+    const {
+        firstName,
+        lastName,
+        oldPassword,
+        newPassword,
+        phone,
+        description,
+        latitude,
+        longitude,
+        commercial,
+    } = req.body
+
+    const userUpdateData = {}
+    if(firstName !== req.user.firstName){
+        userUpdateData.firstName = firstName
+    }
+
+    if(lastName !== req.user.lastName){
+        userUpdateData.lastName = lastName
+    }
+
+    await User.update(userUpdateData, {
+        where: {
+            id: req.user.id
+        }
+    });
+
+    if(newPassword
+        && newPassword.length > 0
+        && oldPassword
+        && oldPassword.length > 0) {
+
+        const user = await User.findOne({where: {id: req.user.id}})
+        if(user && (await bcrypt.compare(oldPassword, user.password))){
+            const password = await bcrypt.hash(newPassword, 5)
+            userUpdateData.password = password
+        }
+    }
+    if(Object.keys(userUpdateData).length !== 0){
+        await User.update(userUpdateData, {
+            where: {
+                id: req.user.id
+            }
+        })
+        console.log(userUpdateData)
+    }
+
+
+    // const user = await
+    //     console.log('------------------------')
+    // console.log(req.body);
+    // console.log('**********************')
+    // console.log(req.user);
+    // console.log('=========================')
     // const { email, password } = req.body;
 
     // const user = await User.findOne({ where: { email } });
@@ -37,44 +86,35 @@ exports.update = async (req, res) => {
 
     //     return res.status(200).json(user);
     // }
-
-    return res.status(401).json({"message": "Логин или пароль указан не верно"});
+    return res.status(200).json({"message": "update"});
 };
 
 exports.profileMe = async (req, res) => {
-    try {
 
-        console.log(req.body.user)
-        const {id, firstName, lastName, email, avatar} = req.body.user
-        return res.status(200).json({
-            id,
-            firstName,
-            lastName,
-            email,
-            avatar,
-        })
-
-    } catch (err) {
-        console.log(err)
-        res.status(401).json({
-            message: "Ошибка получения данных о профиле"
-        })
-    }
+    console.log(req.body.user)
+    const {id, firstName, lastName, email, avatar} = req.user
+    return res.status(200).json({
+        id,
+        firstName,
+        lastName,
+        email,
+        avatar,
+    })
 
 };
 
-exports.profileUser = async(req, res) =>{
-    try{
+exports.profileUser = async (req, res) => {
+    try {
         const {id, status} = req.body.user
         const user = User.findOne({where: {id: req.user.id}})
 
-        if(!user || status == false){
+        if (!user || status == false) {
             return res.status(404).json({
                 message: "Пользователя с таким id не найдено"
             })
         }
 
-    }catch (err) {
+    } catch (err) {
         console.log(err)
         res.status(400).json({
             message: "Ошибка получения данных о профиле"
@@ -84,7 +124,7 @@ exports.profileUser = async(req, res) =>{
 
 exports.avatar = async (req, res) => {
 
-    if(!req.file){
+    if (!req.file) {
         return res.json({
             message: "Выберите файлы"
         })
